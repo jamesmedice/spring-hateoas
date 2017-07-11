@@ -23,11 +23,7 @@ public class PersistentDataHealthIndicator implements HealthIndicator {
 
     @Override
     public Health health() {
-        return Health
-                .up()
-                .withDetail("books.count", bookRepository.count())
-                .withDetail("authors.count", authorRepository.count())
-                .withDetail("publishers.count", publisherRepository.count())
-                .build();
+	return Health.up().withDetail("books.count", bookRepository.count()).withDetail("authors.count", authorRepository.count())
+		.withDetail("publishers.count", publisherRepository.count()).build();
     }
 }
