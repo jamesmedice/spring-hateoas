@@ -17,25 +17,25 @@ import com.open.demo.hateoas.domain.persistence.PublisherRepository;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
-@WebIntegrationTest("server.port=0") // Use a random free port
-@DirtiesContext // Avoid Spring caching contexts
+@WebIntegrationTest("server.port=8880")
+@DirtiesContext
 public abstract class AbstractControllerTest {
 
-   @Value("${local.server.port}")
-   int port;
-   
-   @Autowired
-   BookRepository bookRepository;
-   
-   @Autowired
-   AuthorRepository authorRepository;
-   
-   @Autowired
-   PublisherRepository publisherRepository;
+    @Value("${local.server.port}")
+    int port;
 
-   @Before
-   public void setUp() {
-      RestAssured.port = port;
-   }   
-   
+    @Autowired
+    BookRepository bookRepository;
+
+    @Autowired
+    AuthorRepository authorRepository;
+
+    @Autowired
+    PublisherRepository publisherRepository;
+
+    @Before
+    public void setUp() {
+	RestAssured.port = port;
+    }
+
 }
