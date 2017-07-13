@@ -53,7 +53,7 @@ public class AuthorController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Void> newAuthor(@RequestBody NewAuthor newAuthor) {
-	// TODO Add input validation
+
 	final Author savedAuthor = authorRepository.save(new Author(newAuthor.getFirstName(), newAuthor.getLastName()));
 	final HttpHeaders headers = new HttpHeaders();
 	headers.add("Location", authorResourceAssembler.linkToSingleResource(savedAuthor).getHref());

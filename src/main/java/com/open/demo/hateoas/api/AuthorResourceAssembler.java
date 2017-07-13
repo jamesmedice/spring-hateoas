@@ -13,37 +13,34 @@ import com.open.demo.hateoas.domain.Author;
 import com.open.demo.hateoas.domain.Book;
 
 @Service
-public class AuthorResourceAssembler extends EmbeddableResourceAssemblerSupport<Author, AuthorResource, AuthorController>{
+public class AuthorResourceAssembler extends EmbeddableResourceAssemblerSupport<Author, AuthorResource, AuthorController> {
 
-   @Autowired
-   private BookResourceAssembler bookResourceAssembler;
-   
-   @Autowired
-   public AuthorResourceAssembler(final EntityLinks entityLinks, final RelProvider relProvider) {
-      super(entityLinks, relProvider, AuthorController.class, AuthorResource.class);
-   }
+    @Autowired
+    private BookResourceAssembler bookResourceAssembler;
 
-   @Override
-   public Link linkToSingleResource(Author author) {
-       return entityLinks.linkToSingleResource(AuthorResource.class, getId(author));
-   }
-   
-   
-   @Override
-   public AuthorResource toResource(Author entity) {
-      final AuthorResource resource = createResourceWithId(getId(entity), entity);
-      // Add (multiple) links to authored books 
-      for(Book book : entity.getBooks()) {
-         resource.add( bookResourceAssembler.linkToSingleResource(book).withRel("authored-books") ); 
-      }
-       
-      return resource;
-   }
+    @Autowired
+    public AuthorResourceAssembler(final EntityLinks entityLinks, final RelProvider relProvider) {
+	super(entityLinks, relProvider, AuthorController.class, AuthorResource.class);
+    }
 
-   @Override
-   protected AuthorResource instantiateResource(Author entity) {
-      return new AuthorResource(entity.getFirstName(), entity.getLastName());
-   }
-      
+    @Override
+    public Link linkToSingleResource(Author author) {
+	return entityLinks.linkToSingleResource(AuthorResource.class, getId(author));
+    }
+
+    @Override
+    public AuthorResource toResource(Author entity) {
+	final AuthorResource resource = createResourceWithId(getId(entity), entity);
+	for (Book book : entity.getBooks()) {
+	    resource.add(bookResourceAssembler.linkToSingleResource(book).withRel("authored-books"));
+	}
+
+	return resource;
+    }
+
+    @Override
+    protected AuthorResource instantiateResource(Author entity) {
+	return new AuthorResource(entity.getFirstName(), entity.getLastName());
+    }
+
 }
-

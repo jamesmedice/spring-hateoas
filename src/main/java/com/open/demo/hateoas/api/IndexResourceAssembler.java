@@ -17,24 +17,21 @@ import com.open.demo.hateoas.api.resources.PublisherResource;
 
 @Service
 public class IndexResourceAssembler {
-   private final RelProvider relProvider;
-   private final EntityLinks entityLinks;
-   
-   @Autowired
-   public IndexResourceAssembler(RelProvider relProvider, EntityLinks entityLinks) {
-      this.relProvider = relProvider;
-      this.entityLinks = entityLinks;
-   }
+    private final RelProvider relProvider;
+    private final EntityLinks entityLinks;
 
-   public IndexResource buildIndex() {
-      // Note this is unfortunately hand-written. If you add a new entity, have to manually add a new link 
-      final List<Link> links = asList(
-            entityLinks.linkToCollectionResource(BookResource.class).withRel( relProvider.getCollectionResourceRelFor(BookResource.class) ),
-            entityLinks.linkToCollectionResource(AuthorResource.class).withRel( relProvider.getCollectionResourceRelFor(AuthorResource.class) ),
-            entityLinks.linkToCollectionResource(PublisherResource.class).withRel( relProvider.getCollectionResourceRelFor(PublisherResource.class) )
-      );
-      final IndexResource resource = new IndexResource("sample-hateoas", "A sample HATEOAS API");
-      resource.add(links);
-      return resource;
-   }
+    @Autowired
+    public IndexResourceAssembler(RelProvider relProvider, EntityLinks entityLinks) {
+	this.relProvider = relProvider;
+	this.entityLinks = entityLinks;
+    }
+
+    public IndexResource buildIndex() {
+	final List<Link> links = asList(entityLinks.linkToCollectionResource(BookResource.class).withRel(relProvider.getCollectionResourceRelFor(BookResource.class)), entityLinks
+		.linkToCollectionResource(AuthorResource.class).withRel(relProvider.getCollectionResourceRelFor(AuthorResource.class)),
+		entityLinks.linkToCollectionResource(PublisherResource.class).withRel(relProvider.getCollectionResourceRelFor(PublisherResource.class)));
+	final IndexResource resource = new IndexResource("sample-hateoas", "A sample HATEOAS API");
+	resource.add(links);
+	return resource;
+    }
 }
