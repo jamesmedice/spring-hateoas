@@ -18,70 +18,45 @@ import com.open.demo.hateoas.domain.Book;
 import com.open.demo.hateoas.domain.Publisher;
 
 public class ETagSupportTest extends AbstractControllerTest {
-   List<Publisher> publishers;
-   List<Author> authors;
-   List<Book> books;
-   
-   @Before
-   public void setupTestDataset() {
-      bookRepository.deleteAll();
-      publisherRepository.deleteAll();
-      authorRepository.deleteAll();
-      
-      /// Setup test dataset 
-      
-      publishers = asList( 
-            publisherRepository.save(new Publisher("O'Bryan Publishing"))
-      );
-      
-      authors = asList(
-            authorRepository.save(new Author("Walter", "White")),
-            authorRepository.save(new Author("Jesse", "Pinkman"))
-      );
-      
-      books = asList(
-            bookRepository.save(new Book("45678901", "Cooking at home", asList( authors.get(0), authors.get(1)), publishers.get(0), 1))
-      ); 
-   }
+    List<Publisher> publishers;
+    List<Author> authors;
+    List<Book> books;
 
-   @Test
-   public void responseContainsEtag() {  
-      when().get("/authors/jesse_pinkman").
-      then().statusCode(HttpStatus.SC_OK).
-      and().contentType(ContentType.JSON).and().header("ETag", notNullValue());
-   }
-   
-   @Test
-   public void etagDoesntChangeOnConsecutiveRequestsWithoutChanges() {
-      final String etagBefore =
-         when().get("/authors/jesse_pinkman").
-         then().statusCode(HttpStatus.SC_OK).
-         and().extract().header("ETag");
-      
-      final String etagAfter =
-         when().get("/authors/jesse_pinkman").
-         then().statusCode(HttpStatus.SC_OK).
-         and().extract().header("ETag");
-      
-      assertEquals(etagBefore, etagAfter);
-   }
-   
-   @Test
-   public void etagChangesOnAddingBooks() {
-      final String etagBefore =
-         when().get("/authors/jesse_pinkman").
-         then().statusCode(HttpStatus.SC_OK).
-         and().extract().header("ETag");
+    @Before
+    public void setupTestDataset() {
+	bookRepository.deleteAll();
+	publisherRepository.deleteAll();
+	authorRepository.deleteAll();
 
-      // Add a book with the same author,changing the content of the response 
-      // as the author resource contains a list of links to authored books
-      bookRepository.save(new Book("98765432", "Getting high", asList( authors.get(1) ), publishers.get(0), 1));
-      
-      final String etagAfter =
-         when().get("/authors/jesse_pinkman").
-         then().statusCode(HttpStatus.SC_OK).
-         and().extract().header("ETag");
-      
-      assertNotEquals(etagBefore, etagAfter);
-   }
+	publishers = asList(publisherRepository.save(new Publisher("O'Bryan Publishing")));
+
+	authors = asList(authorRepository.save(new Author("Walter", "White")), authorRepository.save(new Author("Jesse", "Pinkman")));
+
+	books = asList(bookRepository.save(new Book("45678901", "Cooking at home", asList(authors.get(0), authors.get(1)), publishers.get(0), 1)));
+    }
+
+    @Test
+    public void responseContainsEtag() {
+	when().get("/authors/jesse_pinkman").then().statusCode(HttpStatus.SC_OK).and().contentType(ContentType.JSON).and().header("ETag", notNullValue());
+    }
+
+    @Test
+    public void etagDoesntChangeOnConsecutiveRequestsWithoutChanges() {
+	final String etagBefore = when().get("/authors/jesse_pinkman").then().statusCode(HttpStatus.SC_OK).and().extract().header("ETag");
+
+	final String etagAfter = when().get("/authors/jesse_pinkman").then().statusCode(HttpStatus.SC_OK).and().extract().header("ETag");
+
+	assertEquals(etagBefore, etagAfter);
+    }
+
+    @Test
+    public void etagChangesOnAddingBooks() {
+	final String etagBefore = when().get("/authors/jesse_pinkman").then().statusCode(HttpStatus.SC_OK).and().extract().header("ETag");
+
+	bookRepository.save(new Book("98765432", "Getting high", asList(authors.get(1)), publishers.get(0), 1));
+
+	final String etagAfter = when().get("/authors/jesse_pinkman").then().statusCode(HttpStatus.SC_OK).and().extract().header("ETag");
+
+	assertNotEquals(etagBefore, etagAfter);
+    }
 }
