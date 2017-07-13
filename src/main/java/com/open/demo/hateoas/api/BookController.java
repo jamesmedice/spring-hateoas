@@ -57,9 +57,8 @@ public class BookController {
 
     @RequestMapping(value = "/{isbn}", method = RequestMethod.GET)
     public ResponseEntity<BookResource> showBook(@PathVariable("isbn") final String isbn,
-    // This is an example of optional details included depending on a query
-    // parameter
-	    @RequestParam(value = "detailed", required = false, defaultValue = "false") boolean detailed) {
+
+    @RequestParam(value = "detailed", required = false, defaultValue = "false") boolean detailed) {
 	final Book book = entityOrNotFoundException(bookRepository.findOneByIsbn(isbn));
 
 	final BookResource resource = detailed ? bookResourceAssembler.toDetailedResource(book) : bookResourceAssembler.toResource(book);
@@ -76,33 +75,17 @@ public class BookController {
 	return ResponseEntity.ok(wrapped);
     }
 
-    // This simplified version of "list all books" is not HAL compliant,
-    // returning an array as top object (it should be _embedded)
-    // @RequestMapping(method= RequestMethod.GET)
-    // public ResponseEntity<Iterable<BookResource>> listAllBooks() {
-    // final Iterable<Book> books = bookRepository.findAll();
-    // final Iterable<BookResource> resources =
-    // bookResourceAssembler.toResources(books);
-    // LOG.debug("List all books");
-    // return ResponseEntity.ok(resources);
-    // }
-
-    // Add a book to collection
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Void> newBook(@RequestBody NewBook newBookRequest) {
-	// TODO Add input validation
 
-	// Create or retrieve Authors
 	final List<Author> authors = new ArrayList<>();
 	for (NewBook.Author authorRequest : newBookRequest.getAuthors()) {
 	    authors.add(createOrRetrieveAuthor(authorRequest));
 	}
 
-	// Retrieve Publisher (it must exist)
 	final Publisher publisher = publisherRepository.findOne(Long.valueOf(newBookRequest.getPublisherId()));
 
 	final Book savedBook = bookRepository.save(new Book(newBookRequest.getIsbn(), newBookRequest.getTitle(), authors, publisher, 0));
-	// No copy, initially
 
 	final HttpHeaders headers = new HttpHeaders();
 	final Link linkToNewBook = bookResourceAssembler.linkToSingleResource(savedBook);
@@ -112,10 +95,8 @@ public class BookController {
 	return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
     }
 
-    // Purchase copies of the book (an example of "controller" resource)
     @RequestMapping(value = "/{isbn}/purchase", method = RequestMethod.PUT)
     public ResponseEntity<Void> purchaseBookCopies(@PathVariable("isbn") final String isbn, @RequestBody BookPurchase bookPurchase) {
-	// TODO Add input validation
 
 	final Book book = entityOrNotFoundException(bookRepository.findOneByIsbn(isbn));
 	final int newCopiesAvailable = book.getCopiesAvailable() + bookPurchase.getPurchasedCopies();
@@ -126,13 +107,10 @@ public class BookController {
 	return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 
-    // Borrow a copy of the book (an example of "controller" resource)
     @RequestMapping(value = "/{isbn}/borrow-a-copy", method = RequestMethod.PUT)
     public ResponseEntity<Void> borrowACopy(@PathVariable("isbn") final String isbn) {
 	final Book book = entityOrNotFoundException(bookRepository.findOneByIsbn(isbn));
 
-	// If there is no copy available, return a 400/Bad Request
-	// with a custom header containing the error
 	if (book.getCopiesAvailable() <= 0) {
 	    LOG.debug("No copy available for borrowing isbn: {}", isbn);
 	    final HttpHeaders headers = new HttpHeaders();
@@ -147,7 +125,6 @@ public class BookController {
 	return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
     }
 
-    // Return a copy of the book
     @RequestMapping(value = "/{isbn}/return-a-copy", method = RequestMethod.PUT)
     public ResponseEntity<Void> returnACopy(@PathVariable("isbn") final String isbn) {
 	final Book book = entityOrNotFoundException(bookRepository.findOneByIsbn(isbn));
@@ -173,8 +150,6 @@ public class BookController {
 	    LOG.debug("Removed from book collection isbn:{}", isbn);
 	    bookRepository.delete(bookToDelete);
 	}
-	// Note this return 204/No Content regardless the book has actually been
-	// deleted or not, to be idempotent
 	return ResponseEntity.noContent().build();
     }
 
