@@ -13,6 +13,11 @@ import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import com.open.demo.hateoas.api.CORSFilter;
 
+/**
+ * 
+ * @author TOSS
+ *
+ */
 @Configuration
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 public class RestConfiguration {

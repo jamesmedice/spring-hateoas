@@ -13,51 +13,57 @@ import javax.persistence.ManyToMany;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 import org.springframework.web.util.UriUtils;
 
+/**
+ * 
+ * @author TOSS
+ *
+ */
 @Entity
 public class Author extends AbstractPersistable<Long> {
-   private static final long serialVersionUID = 4890085128347271414L;
+    private static final long serialVersionUID = 4890085128347271414L;
 
-   @Column(unique=true)
-   private String handle;
-   
-   private String firstName;  
+    @Column(unique = true)
+    private String handle;
 
-   private String lastName;
-   
-   @ManyToMany(mappedBy="authors")
-   private List<Book> books= new ArrayList<>();
-   
-   public Author() { }
-   
-   public Author(String firstName, String lastName) {
-      
-      this.firstName = firstName;
-      this.lastName = lastName;
-      try {
-         this.handle = UriUtils.encodeQueryParam( trimToEmpty(firstName).toLowerCase() + "_" + trimToEmpty(lastName).toLowerCase() , "UTF-8");
-      } catch (UnsupportedEncodingException e) {
-        throw new RuntimeException(e);
-      }
-   }
-   
-   public String getHandle() {
-      return handle;
-   }
+    private String firstName;
 
-   public void setHandle(String handle) {
-      this.handle = handle;
-   }
+    private String lastName;
 
-   public String getFirstName() {
-      return firstName;
-   }
+    @ManyToMany(mappedBy = "authors")
+    private List<Book> books = new ArrayList<>();
 
-   public String getLastName() {
-      return lastName;
-   }
+    public Author() {
+    }
 
-   public List<Book> getBooks() {
-      return books;
-   }
-   
+    public Author(String firstName, String lastName) {
+
+	this.firstName = firstName;
+	this.lastName = lastName;
+	try {
+	    this.handle = UriUtils.encodeQueryParam(trimToEmpty(firstName).toLowerCase() + "_" + trimToEmpty(lastName).toLowerCase(), "UTF-8");
+	} catch (UnsupportedEncodingException e) {
+	    throw new RuntimeException(e);
+	}
+    }
+
+    public String getHandle() {
+	return handle;
+    }
+
+    public void setHandle(String handle) {
+	this.handle = handle;
+    }
+
+    public String getFirstName() {
+	return firstName;
+    }
+
+    public String getLastName() {
+	return lastName;
+    }
+
+    public List<Book> getBooks() {
+	return books;
+    }
+
 }

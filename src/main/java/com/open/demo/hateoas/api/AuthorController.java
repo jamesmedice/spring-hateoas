@@ -22,6 +22,11 @@ import com.open.demo.hateoas.api.resources.NewAuthor;
 import com.open.demo.hateoas.domain.Author;
 import com.open.demo.hateoas.domain.persistence.AuthorRepository;
 
+/**
+ * 
+ * @author TOSS
+ *
+ */
 @RestController
 @ExposesResourceFor(AuthorResource.class)
 @RequestMapping(value = "/authors", produces = { MediaType.APPLICATION_JSON_VALUE })

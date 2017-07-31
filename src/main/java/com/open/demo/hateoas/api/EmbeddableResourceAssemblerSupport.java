@@ -28,28 +28,20 @@ public abstract class EmbeddableResourceAssemblerSupport<T, D extends ResourceSu
     }
 
     public List<EmbeddedWrapper> toEmbeddable(Iterable<T> entities) {
-	final EmbeddedWrappers wrapper = new EmbeddedWrappers(true); // Prefer
-								     // collection
+	final EmbeddedWrappers wrapper = new EmbeddedWrappers(true);
 	final List<D> resources = toResources(entities);
 	return resources.stream().map(a -> wrapper.wrap(a)).collect(Collectors.toList());
     }
 
     public EmbeddedWrapper toEmbeddable(T entity) {
-	final EmbeddedWrappers wrapper = new EmbeddedWrappers(false); // DO NOT
-								      // prefer
-								      // collections
+	final EmbeddedWrappers wrapper = new EmbeddedWrappers(false);
 	final D resource = toResource(entity);
 	return wrapper.wrap(resource);
     }
 
     public Resources<D> toEmbeddedList(Iterable<T> entities) {
 	final List<D> resources = toResources(entities);
-	return new Resources<D>(resources, linkTo(controllerClass).withSelfRel()); // Add
-										   // self
-										   // link
-										   // to
-										   // list
-										   // endpoint
+	return new Resources<D>(resources, linkTo(controllerClass).withSelfRel());
     }
 
     public abstract Link linkToSingleResource(T entity);
