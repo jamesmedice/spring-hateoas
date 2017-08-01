@@ -19,6 +19,9 @@ import org.springframework.context.annotation.Primary;
  */
 @SpringBootApplication
 public class Application {
+
+    private static final String USING_EXTERNAL_DATABASE = "Using external database";
+
     private final static Logger LOG = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
@@ -29,7 +32,7 @@ public class Application {
     @Primary
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource dataSource() {
-	LOG.info("Using external database");
+	LOG.info(USING_EXTERNAL_DATABASE);
 	return DataSourceBuilder.create().build();
     }
 }
