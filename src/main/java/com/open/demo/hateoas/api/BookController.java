@@ -34,6 +34,11 @@ import com.open.demo.hateoas.domain.persistence.AuthorRepository;
 import com.open.demo.hateoas.domain.persistence.BookRepository;
 import com.open.demo.hateoas.domain.persistence.PublisherRepository;
 
+/***
+ * 
+ * @author TOSS
+ *
+ */
 @RestController
 @ExposesResourceFor(BookResource.class)
 @RequestMapping(value = "/books", produces = { MediaType.APPLICATION_JSON_VALUE })
