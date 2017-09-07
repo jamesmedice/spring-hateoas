@@ -17,11 +17,15 @@ import org.springframework.stereotype.Component;
 
 import static java.util.Arrays.asList;
 
+/**
+ * 
+ * @author TOSS
+ *
+ */
 @ConditionalOnProperty("loadsampledata")
 @Component
 public class SampleDataLoader implements ApplicationListener<ContextRefreshedEvent> {
     private final static Logger LOG = LoggerFactory.getLogger(SampleDataLoader.class);
-
 
     @Autowired
     private BookRepository bookRepository;
@@ -31,37 +35,26 @@ public class SampleDataLoader implements ApplicationListener<ContextRefreshedEve
 
     @Autowired
     private PublisherRepository publisherRepository;
-   
+
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
-        LOG.info("Loading sample data");
+	LOG.info("Loading sample data");
 
+	if (bookRepository.count() == 0 && publisherRepository.count() == 0 && authorRepository.count() == 0) {
+	    final Publisher[] publishers = { publisherRepository.save(new Publisher("O'Reilly")), publisherRepository.save(new Publisher("Addison Wesley")) };
 
-        if (bookRepository.count() == 0 && publisherRepository.count() == 0 && authorRepository.count() == 0) {
-            final Publisher[] publishers = {
-                    publisherRepository.save(new Publisher("O'Reilly")),
-                    publisherRepository.save(new Publisher("Addison Wesley"))
-            };
+	    final Author[] authors = { authorRepository.save(new Author("David", "Flanagan")), authorRepository.save(new Author("Martin", "Fowler")),
+		    authorRepository.save(new Author("Kendall", "Scott")) };
 
-            final Author[] authors = {
-                    authorRepository.save(new Author("David", "Flanagan")),
-                    authorRepository.save(new Author("Martin", "Fowler")),
-                    authorRepository.save(new Author("Kendall", "Scott"))
-            };
+	    final Book[] books = { bookRepository.save(new Book("0596007736", "Java in a Nutshell", asList(authors[0]), publishers[0], 3)),
+		    bookRepository.save(new Book("0321127420", "Patterns of Enterprise Application Architecture", asList(authors[1], authors[2]), publishers[1], 1)),
+		    bookRepository.save(new Book("0321193687", "UML Distilled: Applying the Standard Object Modelling Language", asList(authors[1]), publishers[1], 0)) };
 
-
-            final Book[] books = {
-                    bookRepository.save(new Book("0596007736", "Java in a Nutshell", asList(authors[0]), publishers[0], 3)),
-                    bookRepository.save(new Book("0321127420", "Patterns of Enterprise Application Architecture", asList(authors[1], authors[2]), publishers[1], 1)),
-                    bookRepository.save(new Book("0321193687", "UML Distilled: Applying the Standard Object Modelling Language", asList(authors[1]), publishers[1], 0))
-            };
-
-            LOG.info("Added {} Books, {} Publishers and {} Authors", books.length, publishers.length, authors.length);
-        } else {
-            LOG.info("Database is not empty. No sample data will be loaded.");
-        }
+	    LOG.info("Added {} Books, {} Publishers and {} Authors", books.length, publishers.length, authors.length);
+	} else {
+	    LOG.info("Database is not empty. No sample data will be loaded.");
+	}
 
     }
-
 
 }
