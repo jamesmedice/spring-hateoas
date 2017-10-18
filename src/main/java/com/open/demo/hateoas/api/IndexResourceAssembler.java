@@ -17,6 +17,7 @@ import com.open.demo.hateoas.api.resources.PublisherResource;
 
 @Service
 public class IndexResourceAssembler {
+
     private final RelProvider relProvider;
     private final EntityLinks entityLinks;
 
@@ -30,7 +31,7 @@ public class IndexResourceAssembler {
 	final List<Link> links = asList(entityLinks.linkToCollectionResource(BookResource.class).withRel(relProvider.getCollectionResourceRelFor(BookResource.class)), entityLinks
 		.linkToCollectionResource(AuthorResource.class).withRel(relProvider.getCollectionResourceRelFor(AuthorResource.class)),
 		entityLinks.linkToCollectionResource(PublisherResource.class).withRel(relProvider.getCollectionResourceRelFor(PublisherResource.class)));
-	final IndexResource resource = new IndexResource("sample-hateoas", "A sample HATEOAS API");
+	final IndexResource resource = new IndexResource("sample_hateoas", "A sample HATEOAS API");
 	resource.add(links);
 	return resource;
     }
